@@ -2,6 +2,7 @@ import datetime
 from typing import Optional
 import requests
 from bs4 import BeautifulSoup
+from daily_cash_dal import JackpotHistory, DailyCashContext
 
 class Jackpot(object):
     
@@ -70,3 +71,25 @@ class CrawlerService(object):
             jackpot.date = tds[6].get_text()
             jackpots.append(jackpot)
         return jackpots
+    
+    def load_jackpots_history_to_db(self, year:int) -> None:
+        jackpots = self.get_jackpots_by_year(year)
+        db = DailyCashContext()
+        db.open()
+        for j in jackpots:
+            jh = JackpotHistory()
+            jh.year = j.year
+            jh.round = j.round
+            jh.first = j.first
+            jh.second = j.second
+            jh.third = j.third
+            jh.fourth = j.fourth
+            jh.fifth = j.fifth
+            jh.date = j.date
+            is_success = db.insert_jackpot(jh)
+            if is_success == False:
+                print(j)
+                print("failed!")
+                break
+        db.commit()
+        db.close()
