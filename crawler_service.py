@@ -72,7 +72,7 @@ class CrawlerService(object):
             jackpots.append(jackpot)
         return jackpots
     
-    def load_jackpots_history_to_db(self, year:int) -> None:
+    def load_jackpots_history_to_db(self, year:int) -> "list[Jackpot]":
         jackpots = self.get_jackpots_by_year(year)
         db = DailyCashContext()
         db.open()
@@ -93,3 +93,4 @@ class CrawlerService(object):
                 break
         db.commit()
         db.close()
+        return jackpots
