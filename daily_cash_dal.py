@@ -3,7 +3,6 @@ from xmlrpc.client import Boolean
 from sqlalchemy import Column, String, Integer, Float, create_engine, ForeignKey, insert
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base, Session
 
-
 Base = declarative_base()
 
 class JackpotHistory(Base):

@@ -2,7 +2,6 @@ import datetime
 from typing import Optional
 import requests
 from bs4 import BeautifulSoup
-from daily_cash_dal import JackpotHistory, DailyCashContext
 
 class Jackpot(object):
     
@@ -15,8 +14,13 @@ class Jackpot(object):
         self.fourth = 0
         self.fifth = 0
         self.date = "1900-01-01"
-        self.numbers = [self.first, self.second, self.third, self.fourth, self.fifth]
         pass
+
+    def get_numbers(self) -> tuple[int]:
+        numbers = [self.first, self.second, self.third, self.fourth, self.fifth]
+        numbers = sorted(numbers, key=lambda n:n)
+        print(numbers)
+        return tuple(numbers)
 
     def __repr__(self) -> str:
         string_value = f'{self.year}年第{self.round}期: {self.first}, {self.second}, {self.third}, {self.fourth}, {self.fifth} 日期:{self.date}'
@@ -66,37 +70,3 @@ class CrawlerService(object):
             jackpot.date = tds[6].get_text()
             jackpots.append(jackpot)
         return jackpots
-
-
-def main() -> int:
-    service = CrawlerService()
-
-    db = DailyCashContext()
-    db.open()
-    for i in range(112-107):
-        
-        jackpots = service.get_jackpots_by_year(i+107)
-
-        for j in jackpots:
-            jh = JackpotHistory()
-            jh.year = j.year
-            jh.round = j.round
-            jh.first = j.first
-            jh.second = j.second
-            jh.third = j.third
-            jh.fourth = j.fourth
-            jh.fifth = j.fifth
-            jh.date = j.date
-            is_success = db.insert_jackpot(jh)
-            if is_success == False:
-                print(j)
-                print("failed!")
-                break
-
-    db.commit()
-    db.close()
-   
-    return 0
-
-if __name__ == '__main__':
-    main()

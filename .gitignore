@@ -129,6 +129,8 @@ dmypy.json
 .pyre/
 
 # virtualenv
+Lib/
+Scripts/
 bin/
 include/
 lib/
