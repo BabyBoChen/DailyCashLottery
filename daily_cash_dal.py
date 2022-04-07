@@ -47,6 +47,11 @@ class DailyCashContext():
             is_success = False
         return is_success
 
+    def get_jackpots(self) -> list[JackpotHistory]:
+        jackpots:list[JackpotHistory] = []
+        jackpots = self.session.query(JackpotHistory).all()
+        return jackpots
+
     def commit(self):
         is_success = False
         try:
